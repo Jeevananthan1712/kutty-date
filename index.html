@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hey Soojitha 👋</title>
+    <style>
+        /* --- DESIGN SYSTEM & CSS VARIABLES --- */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #ffe5ec 0%, #ffc2d1 50%, #fba2b8 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 12px 40px 0 rgba(251, 162, 184, 0.25);
+            --text-primary: #4a283d;
+            --text-secondary: #704460;
+            --accent-color: #ff5c8a;
+            --accent-hover: #ff3366;
+            --radius-main: 24px;
+            --radius-btn: 14px;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: var(--text-primary);
+            position: relative;
+            padding: 20px;
+        }
+
+        /* --- BACKGROUND DECORATIONS (Lotus Petals) --- */
+        .petal-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .petal {
+            position: absolute;
+            background: radial-gradient(circle at 50% 0%, #ffccd5, #ffb3c1);
+            border-radius: 50% 0% 50% 50%;
+            transform: rotate(45deg);
+            opacity: 0.7;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.05));
+            animation: float-down 12s linear infinite;
+        }
+
+        @keyframes float-down {
+            0% { transform: translateY(-10%) rotate(0deg) translateX(0); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(110%) rotate(360deg) translateX(80px); opacity: 0; }
+        }
+
+        /* --- GLASSMORPHISM CARD --- */
+        .card-container {
+            width: 100%;
+            max-width: 460px;
+            min-height: 440px; 
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-main);
+            box-shadow: var(--glass-shadow);
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+            position: relative;
+            overflow: hidden; 
+        }
+
+        /* --- PAGE LIFECYCLE --- */
+        .page {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .sub-note {
+            font-size: 0.85rem;
+            opacity: 0.75;
+            font-style: italic;
+            margin-top: -15px;
+            margin-bottom: 25px;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: var(--radius-btn);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            font-family: var(--font-family);
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 92, 138, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.85);
+            transform: translateY(-2px);
+        }
+
+        /* --- INTERMEDIATE SUCCESS MESSAGES --- */
+        .feedback-overlay {
+            margin-top: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            line-height: 1.4;
+        }
+
+        .feedback-overlay.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* --- TYPEWRITER KUTTY FLOW --- */
+        .typewriter-box {
+            min-height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        /* --- ACTIVITIES GRID --- */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 4px;
+            margin-bottom: 15px;
+        }
+        
+        .activity-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+        .activity-grid::-webkit-scrollbar-thumb {
+            background: rgba(74, 40, 61, 0.2);
+            border-radius: 4px;
+        }
+
+        .activity-card {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .activity-card.selected {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.4);
+            font-family: var(--font-family);
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .custom-input:focus {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: var(--accent-color);
+        }
+
+        /* --- DATE/TIME ELEMENTS --- */
+        .datetime-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        /* --- THE NO BUTTON EVASION AREA --- */
+        .proposal-buttons {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #btn-yes-proposal {
+            position: absolute;
+            top: 0;
+            width: 240px;
+            z-index: 10;
+        }
+
+        #btn-no-proposal {
+            position: absolute;
+            bottom: 35px;
+            width: 140px;
+            z-index: 99;
+            transition: opacity 0.1s ease, top 0.15s ease, left 0.15s ease;
+        }
+
+        /* --- FINAL REPORT SUMMARY --- */
+        .report-box {
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 16px;
+            width: 100%;
+            padding: 14px;
+            text-align: left;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .report-line {
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .report-line span:first-child {
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .report-line span:last-child {
+            font-weight: 700;
+        }
+
+        /* --- CONFETTI CANVAS --- */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="petal-container" id="petal-container"></div>
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="card-container" id="main-card">
+
+        <!-- PAGE 1: INTRO -->
+        <div class="page active" id="page1">
+            <h1>Hey Soojitha 👋</h1>
+            <p>Before you continue... I have a few important questions 😌</p>
+            <button class="btn-primary" onclick="nextPage(2)">Okay, let's see</button>
+        </div>
+
+        <!-- PAGE 2: COUPLES -->
+        <div class="page" id="page2">
+            <h1>❤️ Who's the better couple?</h1>
+            <p class="sub-note">Choose wisely, tactical evaluation in progress.</p>
+            <div class="btn-group">
+                <button class="btn-secondary" onclick="triggerFeedback(2, 'Correct answer 😌')">Pooja & Neela</button>
+                <button class="btn-secondary" onclick="triggerFeedback(2, 'Correct answer 😌')">Pavi & Neela</button>
+                <button class="btn-secondary" onclick="triggerFeedback(2, 'Correct answer 😌')">Suji & Jai</button>
+                <button class="btn-secondary" onclick="triggerFeedback(2, 'Correct answer 😌')">Prakash & Pavi</button>
+            </div>
+            <div class="feedback-overlay" id="feedback-2"></div>
+        </div>
+
+        <!-- PAGE 3: SMILE CHECK -->
+        <div class="page" id="page3">
+            <h1>😊 One important question...</h1>
+            <p>Are you smiling yet?</p>
+            <div class="btn-group">
+                <button class="btn-secondary" onclick="triggerFeedback(3, 'I\'m smiling too, actually kinda smiling in fear :) but mission successful')">😊 Yes</button>
+                <button class="btn-secondary" onclick="triggerFeedback(3, 'Why not... It\'s absolutely okay if you don\'t like this.')">😒 No</button>
+                <button class="btn-secondary" onclick="triggerFeedback(3, 'Good enough.<br>Mission progressing successfully. 🌸')">😂 Maybe a little</button>
+            </div>
+            <div class="feedback-overlay" id="feedback-3"></div>
+        </div>
+
+        <!-- PAGE 4: THE IDIOT QUERY -->
+        <div class="page" id="page4">
+            <h1>🤔 One last question...</h1>
+            <p>Have you ever wondered why one particular idiot keeps talking to you almost every day?</p>
+            <button class="btn-primary" onclick="nextPage(5)">Maybe 🤔</button>
+        </div>
+
+        <!-- PAGE 5: THE TYPEWRITER REVEAL -->
+        <div class="page" id="page5">
+            <div class="typewriter-box" id="typewriter-text"></div>
+        </div>
+
+        <!-- PAGE 6: THE MAIN PROPOSAL -->
+        <div class="page" id="page6">
+            <h1>Soojitha...</h1>
+            <p>Will you go on a kutty date with me? ❤️</p>
+            <div class="proposal-buttons" id="proposal-area">
+                <button class="btn-primary" id="btn-yes-proposal" onclick="nextPage(7)">😌 Okay Jeeva, let's go</button>
+                <button class="btn-secondary" id="btn-no-proposal">😒 No da</button>
+            </div>
+        </div>
+
+        <!-- PAGE 7: SCHEDULING -->
+        <div class="page" id="page7">
+            <h1>📅 When should this legendary kutty date happen?</h1>
+            <p class="sub-note">Future generations will study this decision.</p>
+            <div class="datetime-container">
+                <input type="date" id="date-picker" class="custom-input">
+                <input type="time" id="time-picker" class="custom-input">
+            </div>
+            <button class="btn-primary" onclick="validateDateTime()">Continue</button>
+        </div>
+
+        <!-- PAGE 8: ACTIVITIES -->
+        <div class="page" id="page8">
+            <h1>🎉 What are we doing?</h1>
+            <div class="activity-grid">
+                <div class="activity-card" onclick="selectActivity(this, 'Bowling 🎳')">🎳 Bowling</div>
+                <div class="activity-card" onclick="selectActivity(this, 'Go Karting 🏎️')">🏎️ Go Kart</div>
+                <div class="activity-card" onclick="selectActivity(this, 'Coffee + Endless Talking ☕')">☕ Coffee</div>
+                <div class="activity-card" onclick="selectActivity(this, 'Pondy Escape 🌊')">🌊 Pondy</div>
+                <div class="activity-card" onclick="selectActivity(this, 'Movie 🎬')">🎬 Movie</div>
+                <div class="activity-card" onclick="selectActivity(this, 'Food Mission 🍜')">🍜 Food</div>
+                <div class="activity-card" id="card-surprise" onclick="selectActivity(this, 'Surprise Me ❤️')">❤️ Surprise</div>
+            </div>
+            <input type="text" id="custom-activity" class="custom-input" placeholder="Or tell me your idea..." style="margin-bottom: 20px;">
+            <button class="btn-primary" onclick="generateSuccessPage()">Lock it in! 😌</button>
+        </div>
+
+        <!-- PAGE 9: SUCCESS REPORT WITH DISCLAIMER -->
+        <div class="page" id="page9">
+            <h1>MISSION STATUS REPORT</h1>
+            <div class="report-box">
+                <div class="report-line"><span>Status:</span><span style="color:#2b9348;">✅ Date Accepted</span></div>
+                <div class="report-line"><span>Vibe:</span><span style="color:#2b9348;">✅ Happiness Increased</span></div>
+                <div class="report-line"><span>Side Effect:</span><span style="color:#2b9348;">✅ Jeeva can't stop smiling</span></div>
+                <hr style="border: 0; border-top: 1px dashed rgba(0,0,0,0.1); margin: 10px 0;">
+                <div class="report-line"><span>Date:</span><span id="summary-date">-</span></div>
+                <div class="report-line"><span>Time:</span><span id="summary-time">-</span></div>
+                <div class="report-line"><span>Plan:</span><span id="summary-activity">-</span></div>
+            </div>
+            <p style="font-size: 0.9rem; margin-bottom: 12px;">
+                Soojitha,<br>Thanks for making this easy 😌🌸<br>
+                <span style="font-size:0.8rem; opacity:0.7;">I promise the actual date will be less awkward than this website.</span>
+            </p>
+            <p style="font-size: 0.85rem; font-weight: 600; color: #b7094c; background: rgba(255,255,255,0.4); padding: 8px; border-radius: 8px; margin-bottom: 15px;">
+                ⚠️ Strict Ground Rule: No racist jokes on the date, okay? 💀😭
+            </p>
+            <p style="font-size: 0.9rem; font-weight: 600; color: var(--accent-color); margin-bottom: 15px;">
+                Seri...<br>Screenshot eduthu vechikuren 📸<br>Inime back adikka koodadhu 😌❤️
+            </p>
+            <button class="btn-primary" onclick="sendEmail()">📧 Share to GVA ❤️</button>
+        </div>
+
+    </div>
+
+    <script>
+        /* --- GLOBAL STATE --- */
+        let chosenDate = "";
+        let chosenTime = "";
+        let chosenActivity = "";
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            const picker = document.getElementById('date-picker');
+            if(picker) picker.min = today;
+            createPetals();
+        });
+
+        /* --- LOTUS PETAL GENERATOR --- */
+        function createPetals() {
+            const container = document.getElementById('petal-container');
+            const petalCount = 15;
+            for (let i = 0; i < petalCount; i++) {
+                let petal = document.createElement('div');
+                petal.classList.add('petal');
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.width = Math.random() * 15 + 10 + 'px';
+                petal.style.height = petal.style.width;
+                petal.style.animationDelay = Math.random() * 8 + 's';
+                petal.style.animationDuration = Math.random() * 6 + 8 + 's';
+                container.appendChild(petal);
+            }
+        }
+
+        /* --- PAGE NAVIGATION FLOW --- */
+        function nextPage(pageNum) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            const targetPage = document.getElementById(`page${pageNum}`);
+            if(targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            if (pageNum === 5) {
+                runTypewriterFlow();
+            }
+            if (pageNum === 6) {
+                initializeNoButton();
+            }
+        }
+
+        /* --- INTERMEDIATE FEEDBACK TIMERS --- */
+        function triggerFeedback(currentPage, textHtml) {
+            const feedbackEl = document.getElementById(`feedback-${currentPage}`);
+            if(feedbackEl) {
+                feedbackEl.innerHTML = textHtml;
+                feedbackEl.classList.add('show');
+            }
+            
+            const buttons = document.querySelectorAll(`#page${currentPage} button`);
+            buttons.forEach(btn => btn.disabled = true);
+
+            setTimeout(() => {
+                nextPage(currentPage + 1);
+            }, 3000);
+        }
+
+        /* --- TYPEWRITER DIALOGUE SYSTEM --- */
+        function runTypewriterFlow() {
+            const box = document.getElementById('typewriter-text');
+            if(!box) return;
+            
+            const scripts = [
+                "Because he likes talking to you.",
+                "Like...",
+                "A lot.",
+                "And he'd really like to take you on a kutty date 🌸"
+            ];
+            
+            let currentLine = 0;
+
+            function typeLine(text, callback) {
+                box.innerHTML = "";
+                let index = 0;
+                function timer() {
+                    if (index < text.length) {
+                        box.innerHTML += text.charAt(index);
+                        index++;
+                        setTimeout(timer, 40);
+                    } else {
+                        setTimeout(callback, 1200);
+                    }
+                }
+                timer();
+            }
+
+            function step() {
+                if (currentLine < scripts.length) {
+                    typeLine(scripts[currentLine], () => {
+                        currentLine++;
+                        step();
+                    });
+                } else {
+                    nextPage(6);
+                }
+            }
+            step();
+        }
+
+        /* --- NO BUTTON EVASION ENGINE --- */
+        let mobileNoCounter = 0;
+        const mobileNoTexts = [
+            "🥺Really??",
+            "😭 Think again",
+            "Jake would be disappointed",
+            "Jim is judging you right now",
+            "Fine... but I'm still hoping you'll press Yes ❤️"
+        ];
+
+        function initializeNoButton() {
+            const noBtn = document.getElementById('btn-no-proposal');
+            const proposalArea = document.getElementById('proposal-area');
+            if(!noBtn || !proposalArea) return;
+            
+            mobileNoCounter = 0; 
+            noBtn.style.position = 'absolute';
+            noBtn.style.bottom = '35px';
+            
+            // Explicit center logic calculation: (Container Width - Button Width) / 2
+            const areaWidth = proposalArea.offsetWidth;
+            const btnWidth = 140; 
+            noBtn.style.left = ((areaWidth - btnWidth) / 2) + 'px';
+            
+            noBtn.style.top = 'auto';
+            noBtn.style.opacity = '1';
+            noBtn.innerText = "😒 No da";
+
+            const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+            if (!isTouch) {
+                let positions = [
+                    { top: '75px', left: '40px' },   
+                    { top: '135px', left: '240px' }, 
+                    { top: '75px', left: '240px' },  
+                    { top: '135px', left: '40px' }   
+                ];
+                let currentPosIndex = 0;
+
+                const teleport = () => {
+                    noBtn.style.opacity = '0';
+                    setTimeout(() => {
+                        let target = positions[currentPosIndex];
+                        noBtn.style.top = target.top;
+                        noBtn.style.left = target.left;
+                        noBtn.style.bottom = 'auto';
+                        noBtn.style.opacity = '1';
+                        currentPosIndex = (currentPosIndex + 1) % positions.length;
+                    }, 70);
+                };
+
+                noBtn.addEventListener('mouseenter', teleport);
+                noBtn.addEventListener('mouseover', teleport);
+            } else {
+                noBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (mobileNoCounter < mobileNoTexts.length) {
+                        noBtn.innerText = mobileNoTexts[mobileNoCounter];
+                        mobileNoCounter++;
+                        
+                        // Recalculate horizontal center dynamic layout if the text changes button size properties
+                        const newAreaWidth = proposalArea.offsetWidth;
+                        const newBtnWidth = noBtn.offsetWidth;
+                        noBtn.style.left = ((newAreaWidth - newBtnWidth) / 2) + 'px';
+                    } else {
+                        noBtn.style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        /* --- ACTIVITY SELECTION --- */
+        function selectActivity(element, name) {
+            document.querySelectorAll('.activity-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            chosenActivity = name;
+            const custom = document.getElementById('custom-activity');
+            if(custom) custom.value = "";
+        }
+
+        /* --- DATA PACKAGING AND VALIDATIONS --- */
+        function validateDateTime() {
+            const d = document.getElementById('date-picker').value;
+            const t = document.getElementById('time-picker').value;
+            if(!d || !t) {
+                alert("Please select both a date and time! 😌");
+                return;
+            }
+            chosenDate = d;
+            chosenTime = t;
+            nextPage(8);
+        }
+
+        function generateSuccessPage() {
+            const customInput = document.getElementById('custom-activity').value.trim();
+            if(customInput) {
+                chosenActivity = "Custom Idea: " + customInput;
+            }
+
+            if(!chosenActivity) {
+                alert("Pick an activity or write one in! Don't leave me hanging 🌸");
+                return;
+            }
+
+            document.getElementById('summary-date').innerText = chosenDate;
+            document.getElementById('summary-time').innerText = chosenTime;
+            document.getElementById('summary-activity').innerText = chosenActivity;
+
+            nextPage(9);
+            runConfetti();
+        }
+
+        /* --- MAIL CLIENT AUTOMATION ENGINE --- */
+        function sendEmail() {
+            const email = "sjeevananthan1712@gmail.com";
+            const subject = encodeURIComponent("Kutty Date Accepted ❤️");
+            const body = encodeURIComponent(
+                `Hey Jeeva,\n\nI accepted your invite! Here are the details:\n\n` +
+                `📅 Date: ${chosenDate}\n` +
+                `⏰ Time: ${chosenTime}\n` +
+                `🎉 Activity: ${chosenActivity}\n\n` +
+                `P.S. I promise not to make any racist jokes on our date 💀😭\n\n` +
+                `See you then! 😌🌸`
+            );
+            window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+        }
+
+        /* --- VANILLA CONFETTI RENDER ENGINE --- */
+        function runConfetti() {
+            const canvas = document.getElementById("confetti-canvas");
+            if(!canvas) return;
+            const ctx = canvas.getContext("2d");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let pieces = [];
+            const numberOfPieces = 120;
+            const colors = ["#ff5c8a", "#ffccd5", "#fff0f3", "#ffb3c1", "#ff85a1"];
+
+            function Piece(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = (Math.random() * 8) + 6;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = (Math.random() * 4) - 2;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.speedY = (Math.random() * 3) + 2;
+                this.speedX = (Math.random() * 2) - 1;
+            }
+
+            for (let i = 0; i < numberOfPieces; i++) {
+                pieces.push(new Piece(Math.random() * canvas.width, Math.random() * -canvas.height));
+            }
+
+            function update() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                pieces.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.rotationSpeed;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+
+                    if (p.y > canvas.height) {
+                        p.y = -20;
+                        p.x = Math.random() * canvas.width;
+                    }
+                });
+
+                requestAnimationFrame(update);
+            }
+            update();
+        }
+    </script>
+</body>
+</html>
