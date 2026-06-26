@@ -201,7 +201,7 @@
 
         /* --- TYPEWRITER KUTTY FLOW --- */
         .typewriter-box {
-            min-height: 220px; /* Increased to accommodate longer textual content fluidly */
+            min-height: 220px; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -346,6 +346,46 @@
             z-index: 5;
         }
     </style>
+
+    <!-- CRITICAL CORE NAVIGATION LOADED FIRST -->
+    <script>
+        /* --- GLOBAL STATE --- */
+        let chosenDate = "";
+        let chosenTime = "";
+        let chosenActivity = "";
+
+        /* --- PAGE NAVIGATION FLOW --- */
+        function nextPage(pageNum) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            const targetPage = document.getElementById(`page${pageNum}`);
+            if(targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            if (pageNum === 5) {
+                runTypewriterFlow();
+            }
+            if (pageNum === 6) {
+                initializeNoButton();
+            }
+        }
+
+        /* --- INTERMEDIATE FEEDBACK TIMERS --- */
+        function triggerFeedback(currentPage, textHtml) {
+            const feedbackEl = document.getElementById(`feedback-${currentPage}`);
+            if(feedbackEl) {
+                feedbackEl.innerHTML = textHtml;
+                feedbackEl.classList.add('show');
+            }
+            
+            const buttons = document.querySelectorAll(`#page${currentPage} button`);
+            buttons.forEach(btn => btn.disabled = true);
+
+            setTimeout(() => {
+                nextPage(currentPage + 1);
+            }, 3000);
+        }
+    </script>
 </head>
 <body>
 
@@ -368,7 +408,7 @@
             <div class="btn-group">
                 <button class="btn-secondary" onclick="triggerFeedback(2, 'Correct answer 😌')">Pooja & Neela</button>
                 <button class="btn-secondary" onclick="triggerFeedback(2, 'Correct answer 😌')">Pavi & Neela</button>
-                <button class="btn-secondary" onclick="triggerFeedback(2, 'Correct answer 😌')">Suji & Jai</button>
+                <button class="btn-secondary" onclick="triggerFeedback(2, 'Correct answer 😌')">Suji & Jai [ Recommended ✨ ]</button>
                 <button class="btn-secondary" onclick="triggerFeedback(2, 'Correct answer 😌')">Prakash & Pavi</button>
             </div>
             <div class="feedback-overlay" id="feedback-2"></div>
@@ -398,10 +438,10 @@
             <div class="typewriter-box" id="typewriter-text"></div>
         </div>
 
-        <!-- PAGE 6: THE MAIN PROPOSAL[cite: 1] -->
+        <!-- PAGE 6: THE MAIN PROPOSAL -->
         <div class="page" id="page6">
             <h1>Soojitha...</h1>
-            <p>Will you go on a kutty date with me? ❤️[cite: 1]</p>
+            <p>Will you go on a kutty date with me? ❤️</p>
             <div class="proposal-buttons" id="proposal-area">
                 <button class="btn-primary" id="btn-yes-proposal" onclick="nextPage(7)">😌 Okay Jeeva, let's go</button>
                 <button class="btn-secondary" id="btn-no-proposal">😒 No da</button>
@@ -462,12 +502,8 @@
 
     </div>
 
+    <!-- RENDERING & LAYOUT LOGIC -->
     <script>
-        /* --- GLOBAL STATE --- */
-        let chosenDate = "";
-        let chosenTime = "";
-        let chosenActivity = "";
-
         window.addEventListener('DOMContentLoaded', () => {
             const today = new Date().toISOString().split('T')[0];
             const picker = document.getElementById('date-picker');
@@ -491,50 +527,21 @@
             }
         }
 
-        /* --- PAGE NAVIGATION FLOW --- */
-        function nextPage(pageNum) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            const targetPage = document.getElementById(`page${pageNum}`);
-            if(targetPage) {
-                targetPage.classList.add('active');
-            }
-
-            if (pageNum === 5) {
-                runTypewriterFlow();
-            }
-            if (pageNum === 6) {
-                initializeNoButton();
-            }
-        }
-
-        /* --- INTERMEDIATE FEEDBACK TIMERS --- */
-        function triggerFeedback(currentPage, textHtml) {
-            const feedbackEl = document.getElementById(`feedback-${currentPage}`);
-            if(feedbackEl) {
-                feedbackEl.innerHTML = textHtml;
-                feedbackEl.classList.add('show');
-            }
-            
-            const buttons = document.querySelectorAll(`#page${currentPage} button`);
-            buttons.forEach(btn => btn.disabled = true);
-
-            setTimeout(() => {
-                nextPage(currentPage + 1);
-            }, 3000);
-        }
-
         /* --- TYPEWRITER DIALOGUE SYSTEM --- */
         function runTypewriterFlow() {
             const box = document.getElementById('typewriter-text');
             if(!box) return;
-            
-            // Your custom text integrated seamlessly before the proposal prompt[cite: 1]
+
             const scripts = [
-                "Hey soojitha, idk how exactly to express this stuff to u, so i thought i'll do something where i can showcase my coding skills (since u say i'm a louzy coder).",
-                "So, this all feeling stuff started after mahabalipuram... Idk if this is correct or wrong, but whenever i'm around u i feel super happy.",
+		"Because he likes talking to you.",
+                "Like...",
+                "A lot.",
+		"Here's wht i think...",
+                "Idk how exactly to express this stuff to u, so i thought i'll do something where i can showcase my coding skills (since u say i'm a louzy coder) and therefore this website.",
+                "This all feeling stuff started after mahabalipuram... Idk if this is correct or wrong, but whenever i'm around u i feel super happy.",
                 "I want to know more about you, how u feel, how u are when frustrated, how u are when tired, how u are when anxious and wht not!",
-                "<strong>How I Feel:</strong><br>To be honest, my thoughts always drift back to you. It's a kind of warmth that I haven't felt before, and it makes me want to be there for your best days, your worst days, and everything in between. I just really value having you in my life, and I'd love to see where this goes.",
-                "So wht i'm trying to ask is...[cite: 1]"
+                
+                "So wht i'm trying to ask is..."
             ];
             
             let currentLine = 0;
@@ -543,7 +550,6 @@
                 box.innerHTML = "";
                 let index = 0;
                 
-                // Enhanced handler to skip html tags processing mid-typewrite smoothly
                 function timer() {
                     if (index < text.length) {
                         if (text.charAt(index) === '<') {
@@ -557,9 +563,8 @@
                         }
                         box.innerHTML += text.charAt(index);
                         index++;
-                        setTimeout(timer, 30); // Accelerated speed slightly for readability of longer paragraphs
+                        setTimeout(timer, 30); 
                     } else {
-                        // Dynamically adjust delays for longer text cards so she has time to read them
                         let displayDelay = text.length > 100 ? 5500 : 2500;
                         setTimeout(callback, displayDelay);
                     }
@@ -574,7 +579,7 @@
                         step();
                     });
                 } else {
-                    nextPage(6); // Progresses directly to the proposal page[cite: 1]
+                    nextPage(6); 
                 }
             }
             step();
