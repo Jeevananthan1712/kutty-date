@@ -201,13 +201,16 @@
 
         /* --- TYPEWRITER KUTTY FLOW --- */
         .typewriter-box {
-            min-height: 140px;
+            min-height: 220px; /* Increased to accommodate longer textual content fluidly */
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.05rem;
             font-weight: 600;
-            line-height: 1.6;
+            line-height: 1.5;
+            text-align: left;
+            padding: 10px;
+            overflow-y: auto;
         }
 
         /* --- ACTIVITIES GRID --- */
@@ -395,10 +398,10 @@
             <div class="typewriter-box" id="typewriter-text"></div>
         </div>
 
-        <!-- PAGE 6: THE MAIN PROPOSAL -->
+        <!-- PAGE 6: THE MAIN PROPOSAL[cite: 1] -->
         <div class="page" id="page6">
             <h1>Soojitha...</h1>
-            <p>Will you go on a kutty date with me? ❤️</p>
+            <p>Will you go on a kutty date with me? ❤️[cite: 1]</p>
             <div class="proposal-buttons" id="proposal-area">
                 <button class="btn-primary" id="btn-yes-proposal" onclick="nextPage(7)">😌 Okay Jeeva, let's go</button>
                 <button class="btn-secondary" id="btn-no-proposal">😒 No da</button>
@@ -525,11 +528,13 @@
             const box = document.getElementById('typewriter-text');
             if(!box) return;
             
+            // Your custom text integrated seamlessly before the proposal prompt[cite: 1]
             const scripts = [
-                "Because he likes talking to you.",
-                "Like...",
-                "A lot.",
-                "And he'd really like to take you on a kutty date 🌸"
+                "Hey soojitha, idk how exactly to express this stuff to u, so i thought i'll do something where i can showcase my coding skills (since u say i'm a louzy coder).",
+                "So, this all feeling stuff started after mahabalipuram... Idk if this is correct or wrong, but whenever i'm around u i feel super happy.",
+                "I want to know more about you, how u feel, how u are when frustrated, how u are when tired, how u are when anxious and wht not!",
+                "<strong>How I Feel:</strong><br>To be honest, my thoughts always drift back to you. It's a kind of warmth that I haven't felt before, and it makes me want to be there for your best days, your worst days, and everything in between. I just really value having you in my life, and I'd love to see where this goes.",
+                "So wht i'm trying to ask is...[cite: 1]"
             ];
             
             let currentLine = 0;
@@ -537,13 +542,26 @@
             function typeLine(text, callback) {
                 box.innerHTML = "";
                 let index = 0;
+                
+                // Enhanced handler to skip html tags processing mid-typewrite smoothly
                 function timer() {
                     if (index < text.length) {
+                        if (text.charAt(index) === '<') {
+                            let tagEnd = text.indexOf('>', index);
+                            if (tagEnd !== -1) {
+                                box.innerHTML += text.substring(index, tagEnd + 1);
+                                index = tagEnd + 1;
+                                setTimeout(timer, 40);
+                                return;
+                            }
+                        }
                         box.innerHTML += text.charAt(index);
                         index++;
-                        setTimeout(timer, 40);
+                        setTimeout(timer, 30); // Accelerated speed slightly for readability of longer paragraphs
                     } else {
-                        setTimeout(callback, 1200);
+                        // Dynamically adjust delays for longer text cards so she has time to read them
+                        let displayDelay = text.length > 100 ? 5500 : 2500;
+                        setTimeout(callback, displayDelay);
                     }
                 }
                 timer();
@@ -556,7 +574,7 @@
                         step();
                     });
                 } else {
-                    nextPage(6);
+                    nextPage(6); // Progresses directly to the proposal page[cite: 1]
                 }
             }
             step();
@@ -581,7 +599,6 @@
             noBtn.style.position = 'absolute';
             noBtn.style.bottom = '35px';
             
-            // Explicit center logic calculation: (Container Width - Button Width) / 2
             const areaWidth = proposalArea.offsetWidth;
             const btnWidth = 140; 
             noBtn.style.left = ((areaWidth - btnWidth) / 2) + 'px';
@@ -622,7 +639,6 @@
                         noBtn.innerText = mobileNoTexts[mobileNoCounter];
                         mobileNoCounter++;
                         
-                        // Recalculate horizontal center dynamic layout if the text changes button size properties
                         const newAreaWidth = proposalArea.offsetWidth;
                         const newBtnWidth = noBtn.offsetWidth;
                         noBtn.style.left = ((newAreaWidth - newBtnWidth) / 2) + 'px';
@@ -686,7 +702,7 @@
                 `P.S. I promise not to make any racist jokes on our date 💀😭\n\n` +
                 `See you then! 😌🌸`
             );
-            window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+            window.location.href = `mailto:${email}?subject=${subject}?body=${body}`;
         }
 
         /* --- VANILLA CONFETTI RENDER ENGINE --- */
